@@ -22,10 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
+import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.common.testbench.test.AbstractIT;
 import com.vaadin.flow.component.grid.testbench.GridColumnElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
+import com.vaadin.flow.component.grid.testbench.GridTRElement;
 
 public class GridIT extends AbstractIT {
 
@@ -154,8 +156,10 @@ public class GridIT extends AbstractIT {
 
     @Test
     public void getRow() {
-        Assert.assertEquals("Last name 5", header.getRow(5)
-                .getCell(header.getAllColumns().get(2)).getText());
+        GridTRElement row = header.getRow(5);
+        GridColumnElement headerColumn = header.getAllColumns().get(2);
+        GridTHTDElement cell = row.getCell(headerColumn);
+        Assert.assertEquals("Last name 5", cell.getText());
     }
 
     @Test
@@ -234,6 +238,16 @@ public class GridIT extends AbstractIT {
         cell = noHeader.getCell("First Name 12");
         Assert.assertEquals("", cell.getColumn().getHeaderCell().getText());
         Assert.assertEquals(12, cell.getRow());
+    }
+
+    @Test
+    public void interactWithComponentsInGrid() {
+        GridElement components = $(GridElement.class).id(GridView.COMPONENTS);
+        GridTHTDElement cell = components.getCell(0, 0);
+        ButtonElement button = cell.$(ButtonElement.class).first();
+        button.click();
+        Assert.assertEquals("Click on button 'First Name 1'",
+                getLogRowWithoutNumber(0));
     }
 
     @Test(expected = NoSuchElementException.class)
