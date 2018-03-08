@@ -28,6 +28,7 @@ import com.vaadin.flow.component.grid.testbench.GridColumnElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
 import com.vaadin.flow.component.grid.testbench.GridTRElement;
+import com.vaadin.testbench.TestBenchElement;
 
 public class GridIT extends AbstractIT {
 
@@ -247,6 +248,23 @@ public class GridIT extends AbstractIT {
         ButtonElement button = cell.$(ButtonElement.class).first();
         button.click();
         Assert.assertEquals("Click on button 'First Name 1'",
+                getLogRowWithoutNumber(0));
+    }
+
+    @Test
+    public void detailsRows() {
+        GridElement details = $(GridElement.class).id(GridView.DETAILS);
+        GridTHTDElement cell = details.getCell(9, 0);
+        cell.click();
+        List<TestBenchElement> texts = cell.$("span").all();
+        Assert.assertEquals(2, texts.size());
+        Assert.assertEquals("First Name 9", texts.get(0).getText());
+        Assert.assertEquals("Last Name 9", texts.get(1).getText());
+
+        ButtonElement button = cell.$(ButtonElement.class).first();
+        button.click();
+        Assert.assertEquals(
+                "Hello Person [firstName=First Name 9, lastName=Last name 9, age=9]",
                 getLogRowWithoutNumber(0));
     }
 
